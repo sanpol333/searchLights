@@ -18,4 +18,3 @@ highlighting search results
 
 ## Use
   var new_text = search.useLight(searchText , contentText);
-  [![Code Climate](https://codeclimate.com/github/pivotal/jasmine.png)]
