@@ -9,17 +9,17 @@
 		article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display:block;}
 		* {margin:0;padding:0;}
 		html, body {width:100%;height:100%;margin:0;padding:0;}
-		body {background: #F0EFEB;color:#000;font:12px Tahoma, Helvetica, Arial, Verdana;}
+		body {background-image: linear-gradient(to bottom right, #94D3DF 0%, #00AEFF 100%);color:#000;font:12px Tahoma, Helvetica, Arial, Verdana;}
 		a {color:blue;font:12px Tahoma, Helvetica, Arial, Verdana;text-decoration:underline;}
 		a:hover {text-decoration:none;}
 		footer {height:100px;margin-top:-100px;position:relative;}
-		.title{width: 11vw;height: 41px;margin: 0 auto;font-size: 2vw;color: #36C6E0;font-family: Georgia;margin-top: -70px;text-shadow: 1px 1px 2px #FFF, 0 0 1em #FFF;}
-		.main_block{box-shadow: rgba(0, 0, 0, 0.198039) 0px 4px 18px;background: #FFF;position: fixed;height: 71vh;width: 50vw;left: 25vw;top: 90px;border: 1px solid #D3D3D3;padding: 10px;color: #5C5C5C;}
+		.title{width: 15vw;height: 41px;margin: 0 auto;font-size: 2vw;color: #FFF;font-family: Georgia;margin-top: -70px;text-shadow: 1px 1px 2px #ADA8A8, 0 0 1em #FFF;}
+		.main_block{box-shadow: rgba(0, 0, 0, 0.198039) 0px 4px 18px;background: #FFF;position: fixed;height: 71vh;width: 71vw;left: 14vw;top: 90px;border: 1px solid #D3D3D3;padding: 10px;color: #5C5C5C;}
 		.top_block{margin-top: 6px;margin-bottom: 16px;}
-		.bottom_block{font-size: 1.2vw;color: #5A5A5A;padding: 4px;padding-top: 0px;line-height: 1.5vw;overflow-y: auto;height: 87%;}
-		.main_input{width: 48.9vw;padding-left: 0.3vw;padding-right: 0.3vw;height: 2.64vw;border: 1px solid #D5D5D5;font-size: 1.3vw;color: #707D86;}
+		.bottom_block{font-size: 1.1vw;color: #3A3A3A;padding: 4px;padding-top: 0px;line-height: 1.5vw;overflow-y: auto;height: 87%;}
+		.main_input{width: 69.9vw;padding-left: 0.3vw;padding-right: 0.3vw;height: 2.64vw;border: 1px solid #D5D5D5;font-size: 1.2vw;color: #707D86;}
 		.main_input:focus{border: 1px solid #45BDD4;}
-		.noselect {-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
+		.noselect {/*-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;*/}
 		ul{list-style-type: none;}
 	</style>
 </head>
@@ -34,7 +34,7 @@
 			<div class="main_block">
 				<div class="title">SearchLights</div>
 				<div class="top_block">
-					<input type="text" size="40" placeholder="введите текст" class="main_input">
+					<input id="inp" type="text" size="40" placeholder="введите текст" class="main_input">
 				</div>
 				<div id="content" class="bottom_block noselect">
 					<ul>
@@ -58,17 +58,21 @@
 	<footer></footer>
 	<script type="text/javascript" src="../searchLights.js"></script>
 	<script>
-		var search = searchLights.init({
-			selectType: "background",
-			color: "#F0F0F0"
-		});
-		var search2 = searchLights.init({
-			selectType: "underline",
-			color: "#FFF"
-		});
-
-		console.log(search);
-		console.log(search2);
+		document.onload = (function(){
+			var contentText = document.getElementById('content').innerHTML;
+			// initializing
+			var search = searchLights.init({
+				selectType: "color",
+				color: "#45BDD4"
+			});
+			// bind event to input field
+			document.getElementById('inp').onkeyup = function(){
+				var searchText = this.value;
+				var new_text = search.useLight(searchText , contentText);
+				// write new result
+				document.getElementById('content').innerHTML = new_text;
+			}
+		})();
 	</script>
 </body>
 </html>

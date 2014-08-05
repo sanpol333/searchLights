@@ -25,6 +25,16 @@ var searchLights = (function(window, document) {'use strict';
       };
     })();
 
+    // CLEAR INPUT TEXT
+    var clearInputText = (function() {
+      return function(text) {
+        var text_clear = text.replace(/\.|\#|\`|\~|\!|\@|\$|\%|\^|\&|\*|\'|\"|\,|\<|\>|\||\;|\?|\/|\\|\)|\(/g, ' ');
+        text_clear = text_clear.replace(/^\s+|\s+$/g, '');
+        text_clear = text_clear.replace(/\s+/g, ' ');
+        return text_clear;
+      };
+    })();
+
 
     // #######################
     // ###### VALIDATES ######
@@ -40,7 +50,7 @@ var searchLights = (function(window, document) {'use strict';
 
     // return type of select
     function validateSelectType(val){
-        var isOk  = /(^text$)|(^background$)|(^underline$)/i.test(trim(val));
+        var isOk  = /(^color$)|(^background$)/i.test(trim(val));
         return isOk ? trim(val) : defaulParamValues.selectType;
     }
     // return color
@@ -85,8 +95,63 @@ var searchLights = (function(window, document) {'use strict';
                 }
             }
         }
-        // методы
+        // methods
+        this.useLight = function(search , text){
+            if (search.length < 1) return text;
+            // clear input data
+            search = clearInputText(search);
+            // search array split ' '
+            var search = search.split(' '); 
+            // sorting (long words first)
+            var search_sorted = search.sort(
+                function(a, b){
+                    a = a.toString();
+                    b = b.toString();
+                    return b.length-a.length;
+                }
+            );
+            // foreach words
+            search_sorted.forEach(function(entry , counter, arr){
+                // get regexp
+                var reg_inpSearch = '';
+                var inpSearch_sp_count = search_sorted[counter].length;
+                var inpSearch_sp_ch = search_sorted[counter].match(/[0-9]/);
+                if (search_sorted[counter].length <3 || inpSearch_sp_ch){
+                    reg_inpSearch = search_sorted[counter];
+                }
+                else{
+                    for(var p=0;p<inpSearch_sp_count;p++){
+                        reg_inpSearch += search_sorted[counter].charAt(p)+'( )*';
+                    }
+                }
+                var reg_find = new RegExp(reg_inpSearch,"ig");
+                var title_clear = text.replace(/\<span style=\"'+this.selectType+':\'+this.color+'\"\>|<\/span\>/g, '');
+                // get compared text
+                var inpSearch_find = title_clear.match(reg_find);
+                if (inpSearch_find != null){
+                    // save no dublicate results
+                    var noDuplicateArr = [];
+                    inpSearch_find.forEach(function(entry){
+                        noDuplicateArr.indexOf(entry) < 0 && noDuplicateArr.push(entry);
+                    });
+                    // highlight foreach matches
+                    noDuplicateArr.forEach(function(entry){
+                        var regE = new RegExp("(?![^<]*>)"+entry,"g");
+                        var inpSearch_light = '<!'+entry+'!>';
+                        text = text.replace(regE, inpSearch_light); 
+                    });
+                }
+            });
+
+            // add tags
+            text = text.replace(/<!/g, '<span style="'+this.selectType+':'+this.color+'">');
+            text = text.replace(/!>/g, '</span>'); 
         
+            // script tag protection
+            text = text.replace(/<script([a-z0-9\-\'\"\=\/\s]*)\>.*?\<\/script\>/g, '');
+
+            return text;
+        }
 
         return this;
     }
